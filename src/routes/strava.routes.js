@@ -5,10 +5,10 @@ import { authRequired } from '../middlewares/validateToken.js'
 const router = Router()
 
 if (process.env.NODE_ENV = 'development'){
-  router.post('/exchange_token', exchange_token)
+  router.get('/exchange_token', exchange_token)
 }
 else{
-  router.post('/exchange_token', authRequired, exchange_token)
+  router.get('/exchange_token', authRequired, exchange_token)
 }
 
 export default router
