@@ -11,7 +11,7 @@ DOCUMENTACIÓN PENDIENTE
 - "bcryptjs": Encriptación de contraseñas
 - "jsonwebtoken": Gestión del token de autorización
 - "cookie-parser": middleware que permite leer una cookie desde un request header en una petición de la api
-
+- "dotenv": para guardar variables de entorno durante el desarrollo
 
 MongoDb Atlas para usar mongo en la nube
 - contraseña pendiente de modificar

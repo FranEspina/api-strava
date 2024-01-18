@@ -7,9 +7,9 @@ export function createAccessToken (payload) {
   return new Promise((resolve, reject) => {
     jwt.sign(
       payload, 
-      TOKEN_SECRET, 
+      TOKEN_SECRET(), 
       {
-        'expiresIn': TOKEN_EXPIRES_IN
+        'expiresIn': TOKEN_EXPIRES_IN()
       }, 
       (err, token) => {
         if (err) reject(err)
