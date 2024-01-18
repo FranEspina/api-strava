@@ -1,20 +1,16 @@
 import User from '../schemas/user.model.js'
-import { hashAsync, compareHashAsync } from '../services/cryptService.js'
+import { compareHashAsync } from '../services/cryptService.js'
 import jwt from 'jsonwebtoken'
 import { createAccessToken } from '../services/tokenService.js'
+import { addUserAsync, getUserByIdAsync, getUserByEMailAsync } from '../services/dataService.js'
 
 export const register = async (req, res) => {
-  const { username, password, email } =  req.body 
 
   try{
-    const newUser = new User({
-      username: username, 
-      email: email, 
-    })
 
-    newUser.password = await hashAsync(password)
-  
-    const userSaved = await newUser.save()
+    const { username, password, email } =  req.body 
+
+    const userSaved = await addUserAsync(req.body)
 
     const payload = {id: userSaved._id}
 
@@ -41,10 +37,8 @@ export const login = async (req, res) => {
 
   try {
 
-    const userFound = await User.findOne({email})
+    const userFound = await getUserByEMailAsync(email)
     if (!userFound) return res.status(400).json({message: 'Usuario y/o contraseña incorrectos'}) 
-
-    console.log(userFound)
 
     var okPassword = await compareHashAsync(password, userFound.password)
     if (!okPassword) return res.status(400).json({message: 'Usuario y/o contraseña incorrectos'}) 
@@ -71,4 +65,18 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   res.cookie('token', '', {expires: new Date(0)})
   res.status(200).json({message: "Sesión cerrada correctamente"})
+}
+
+export async function profile (req, res) {
+
+  const userFound = await getUserByIdAsync(req.user.id)
+  if (!userFound) return res.status(404).json({"message": "Usuario no válido"})
+
+  return res.status(200).json({
+    id: userFound._id, 
+    username: userFound.username, 
+    email: userFound.email,
+    createdAt: userFound.createdAt, 
+    updatedAt: userFound.updatedAt,  
+  })
 }

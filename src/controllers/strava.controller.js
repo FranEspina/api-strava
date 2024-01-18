@@ -1,0 +1,1 @@
+export const exchange_token = (req, res) => res.sendStatus(200) 
