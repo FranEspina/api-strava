@@ -1,14 +1,8 @@
 import { Router } from 'express'
-import { exchange_token } from '../controllers/strava.controller.js'
-import { authRequired } from '../middlewares/validateToken.js'
+import { athlete_authorization } from '../controllers/strava.controller.js'
 
 const router = Router()
 
-if (process.env.NODE_ENV = 'development'){
-  router.get('/exchange_token', exchange_token)
-}
-else{
-  router.get('/exchange_token', authRequired, exchange_token)
-}
+router.post('/athlete_authorization', athlete_authorization)
 
 export default router

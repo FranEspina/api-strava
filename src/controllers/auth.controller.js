@@ -7,23 +7,20 @@ import { addUserAsync, getUserByIdAsync, getUserByEMailAsync } from '../services
 export const register = async (req, res) => {
 
   try{
-
-    const { username, password, email } =  req.body 
-
     const userSaved = await addUserAsync(req.body)
-
     const payload = {id: userSaved._id}
-
     var token = await createAccessToken(payload) 
-
     res.cookie('token', token)
 
     return res.status(200).json({
       id: userSaved._id, 
       username: userSaved.username, 
+      firstname: userSaved.firstname, 
+      lastname: userSaved.lastname, 
       email: userSaved.email,
       createdAt: userSaved.createdAt, 
       updatedAt: userSaved.updatedAt,  
+      strava_id: 0
     })
   }
   catch (error) {
@@ -31,13 +28,12 @@ export const register = async (req, res) => {
   }
 }
 
-
 export const login = async (req, res) => {
-  const { email, password } =  req.body 
+  const { username, password } =  req.body 
 
   try {
 
-    const userFound = await getUserByEMailAsync(email)
+    const userFound = await getUserByUsernameAsync(username)
     if (!userFound) return res.status(400).json({message: 'Usuario y/o contraseña incorrectos'}) 
 
     var okPassword = await compareHashAsync(password, userFound.password)
@@ -51,7 +47,10 @@ export const login = async (req, res) => {
     return res.status(200).json({
       id: userFound._id, 
       username: userFound.username, 
+      firstname: userFound.firstname, 
+      lastname: userFound.lastname, 
       email: userFound.email,
+      strava_id: userFound.strava_id, 
       createdAt: userFound.createdAt, 
       updatedAt: userFound.updatedAt,  
     })
@@ -75,7 +74,10 @@ export async function profile (req, res) {
   return res.status(200).json({
     id: userFound._id, 
     username: userFound.username, 
+    firstname: userFound.firstname, 
+    lastname: userFound.lastname, 
     email: userFound.email,
+    strava_id: userFound.strava_id, 
     createdAt: userFound.createdAt, 
     updatedAt: userFound.updatedAt,  
   })

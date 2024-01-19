@@ -4,11 +4,7 @@ import axios from 'axios'
 export async function getUserTokensAsync (authorization_code) {
 
   const urlStravaToken = 'https://www.strava.com/oauth/token'
-
-  console.log(authorization_code)
-  console.log(STRAVA_APP_CLIENT_ID())
-  console.log(STRAVA_APP_CLIENT_SECRET_ID())
-
+  
   try{
     const response = await axios(
       {
@@ -22,8 +18,6 @@ export async function getUserTokensAsync (authorization_code) {
         },
       })
 
-      console.log(response.data)
-      
     return {
       ok: true, 
       value: response.data,
@@ -31,12 +25,11 @@ export async function getUserTokensAsync (authorization_code) {
     }
                     
   } catch (error) {
+    console.log(error)
     return {
       ok: false, 
       value: null, 
       message: error.message, 
     }
   }
-
-
 }
