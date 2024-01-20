@@ -52,3 +52,19 @@ export const createUserFromStravaAsync = async (stravaData) => {
   return await newUser.save()
 
 }
+
+export const updateUserFromStravaAsync = async (strava_id, token_data) => {
+
+  var user = await getUserByStravaIdAsync(strava_id)
+
+  user.strava_data = {
+    token_type: token_data.token_type,
+    expires_at: token_data.expires_at,
+    expires_in: token_data.expires_in,
+    refresh_token: token_data.refresh_token,
+    access_token: token_data.access_token
+  }
+
+  return await user.save()
+
+}

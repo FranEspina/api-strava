@@ -1,5 +1,5 @@
-import { createUserFromStravaAsync, getUserByStravaIdAsync } from '../services/dataService.js'
-import { getUserTokensAsync } from '../services/stravaService.js'
+import { createUserFromStravaAsync, getUserByStravaIdAsync, updateUserFromStravaAsync } from '../services/dataService.js'
+import { getUserTokensAsync, refreshUserTokensAsync } from '../services/stravaService.js'
 
 export const athlete_authorization = async (req, res) => {
 
@@ -28,7 +28,7 @@ export const athlete_authorization = async (req, res) => {
 export const athlete_refresh_token = async (req, res) => {
 
   if (!req.body.refresh_token){
-    console.log(`Se esperaba código de refresco. Request: ${req}`)
+    console.log(`Se esperaba código de refresco. Request: ${req.body}`)
     return res.sendStatus(400)
   }
 
@@ -38,17 +38,23 @@ export const athlete_refresh_token = async (req, res) => {
     return res.sendStatus(400)
   }
 
-  const stravaResponse = await refreshUserTokensAsync(req.body.authorization_code)
+  console.log('validaciones pasadas')
+
+  const stravaResponse = await refreshUserTokensAsync(req.body.refresh_token)
   if (!stravaResponse.ok) return res.sendStatus(500)
   const token_data = stravaResponse.value
+  console.log('recuperado nuevo token')
+  console.log(token_data)
   
   try{
     const strava_id = req.body.strava_id
-    const userSaved = await updateUserFromStravaAsync(strava_id)
+    const userSaved = await updateUserFromStravaAsync(strava_id, token_data)
     if (!userSaved){
       console.log(`Código de usuario no válido. Request: ${req}`)
       return res.sendStatus(400)
     }
+
+    console.log(userSaved)
 
     return res.status(200).json({user: userSaved})
   }
