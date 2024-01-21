@@ -21,7 +21,7 @@ export const athlete_authorization = async (req, res) => {
   }
   catch (error){
     console.log(error)
-    return res.sendStatus(500)
+    return res.status(500).json({error: "Error creando usuario"})
   }
 }
 
