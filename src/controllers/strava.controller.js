@@ -11,12 +11,25 @@ export const athlete_authorization = async (req, res) => {
   const stravaResponse = await getUserTokensAsync(req.body.authorization_code)
   if (!stravaResponse.ok) return res.sendStatus(500)
   const athlete = stravaResponse.value.athlete
-  
+  const strava_id = athlete.id
   try{
-    let userFound = await getUserByStravaIdAsync(athlete.id)
+    let userFound = await getUserByStravaIdAsync(strava_id)
     if (!userFound) {
       userFound = await createUserFromStravaAsync(stravaResponse)
     }
+    else{
+      
+      const token_data = {
+        token_type: stravaResponse.value.token_type,
+        expires_at: stravaResponse.value.expires_at,
+        expires_in: stravaResponse.value.expires_in,
+        refresh_token: stravaResponse.value.refresh_token,
+        access_token: stravaResponse.value.access_token
+      }
+
+      userFound = await updateUserFromStravaAsync(strava_id, token_data)
+    }
+
     return res.status(200).json({user: userFound, athlete: athlete})
   }
   catch (error){
