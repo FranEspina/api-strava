@@ -10,7 +10,15 @@ export async function getUserByEMailAsync (email) {
 }
 
 export async function getUserByStravaIdAsync (strava_id) {
-  return await User.findOne({strava_id})
+  try{
+    return await User.findOne({strava_id})
+  }
+  catch(error){
+    //La base de datos de MongoDb se cae si cambia la IP y el backend no tiene ip fija
+    //si no puede guardar evitamos que falle el API y devolvemos el usuario sin guardar
+    console.log(error)
+    return null
+  }
 }
 
 export async function getUserByUsernameAsync (username) {
@@ -49,22 +57,46 @@ export const createUserFromStravaAsync = async (stravaData) => {
     }
   })
 
-  return await newUser.save()
+  try{
+    return await newUser.save()
+  }
+  catch(error) {
+    //La base de datos de MongoDb se cae si cambia la IP y el backend no tiene ip fija
+    //si no puede guardar evitamos que falle el API y devolvemos el usuario sin guardar
+    console.log(error)
+    return newUser
+  }
 
 }
 
 export const updateUserFromStravaAsync = async (strava_id, token_data) => {
 
-  var user = await getUserByStravaIdAsync(strava_id)
-
-  user.strava_data = {
-    token_type: token_data.token_type,
-    expires_at: token_data.expires_at,
-    expires_in: token_data.expires_in,
-    refresh_token: token_data.refresh_token,
-    access_token: token_data.access_token
+  try{
+    var user = await getUserByStravaIdAsync(strava_id)
+  
+    user.strava_data = {
+      token_type: token_data.token_type,
+      expires_at: token_data.expires_at,
+      expires_in: token_data.expires_in,
+      refresh_token: token_data.refresh_token,
+      access_token: token_data.access_token
+    }
+  
+    return await user.save()
   }
-
-  return await user.save()
-
+  catch(error){
+    //La base de datos de MongoDb se cae si cambia la IP y el backend no tiene ip fija
+    //si no puede guardar evitamos que falle el API y devolvemos el usuario sin guardar
+    console.log(error)
+    return {
+      strava_id: strava_id, 
+      strava_data: {
+        token_type: token_data.token_type,
+        expires_at: token_data.expires_at,
+        expires_in: token_data.expires_in,
+        refresh_token: token_data.refresh_token,
+        access_token: token_data.access_token
+      }
+    }
+  }
 }
