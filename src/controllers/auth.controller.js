@@ -1,6 +1,4 @@
-import User from '../schemas/user.model.js'
 import { compareHashAsync } from '../services/cryptService.js'
-import jwt from 'jsonwebtoken'
 import { createAccessToken } from '../services/tokenService.js'
 import { addUserAsync, getUserByIdAsync, getUserByUsernameAsync } from '../services/dataService.js'
 
