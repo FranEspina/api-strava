@@ -15,5 +15,5 @@ DOCUMENTACIÓN PENDIENTE
 - "axios": para peticiones http al API de strava
 - "cors": Permitir llamadas cruzadas en express (middleware)
 
-MongoDb Atlas para usar mongo en la nube
-- contraseña pendiente de modificar
+## Pendiente 
+Pendiente usar algún inyector de dependencias para altenar la funcionalidad de dataService.js y la dataServiceMock.js
