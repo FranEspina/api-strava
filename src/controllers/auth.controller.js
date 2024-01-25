@@ -2,7 +2,7 @@ import User from '../schemas/user.model.js'
 import { compareHashAsync } from '../services/cryptService.js'
 import jwt from 'jsonwebtoken'
 import { createAccessToken } from '../services/tokenService.js'
-import { addUserAsync, getUserByIdAsync, getUserByEMailAsync } from '../services/dataService.js'
+import { addUserAsync, getUserByIdAsync, getUserByUsernameAsync } from '../services/dataService.js'
 
 export const register = async (req, res) => {
 
@@ -24,6 +24,7 @@ export const register = async (req, res) => {
     })
   }
   catch (error) {
+    console.log(error)
     res.status(500).json({message: error})
   }
 }
@@ -57,6 +58,7 @@ export const login = async (req, res) => {
 
   }
   catch (error) {
+    console.log(error)
     res.status(500).json({message: error})
   }
 }
